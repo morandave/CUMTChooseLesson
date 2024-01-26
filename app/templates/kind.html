@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}选课互助{% endblock %}
+
+<link rel="stylesheet" href="css/kind.css">
+
+{% block page_content %}
+<form class="navbar-form navbar-top">
+    <div class="form-group">
+      <input type="text" id="search-input" name="lesson" class="form-control" placeholder="搜索课程">
+    </div>
+    <button type="submit" class="btn btn-default" onclick="updateActionURL()">搜索</button>
+</form>
+
+<style>
+    .card-deck {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .custom-card {
+        flex: 0 0 calc(25% - 20px);
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="card-deck">
+    {% for lesson in lessons %}
+    <div class="col-md-3">
+        <div class="card custom-card" id="course-card-{{ loop.index }}">
+            <img src="" data-src="{{ url_for('static', filename='asset/images/cumt.jpg') }}" alt="Card Image">
+            <div class="card-body">
+                <h2>{{ lesson.course }}</h2>
+                <p>{{ lesson.teacher }}</p>
+                <p>{{ lesson.credit }}学分</p>
+                {% if lesson.examination is none %}<p></p>{% else %}<p>{{ lesson.examination }}</p>{% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var lazyImages = Array.from(document.querySelectorAll('.custom-card img'));
+
+    function lazyLoad() {
+        lazyImages.forEach(function(img) {
+            if (img.getBoundingClientRect().top <= window.innerHeight && img.getBoundingClientRect().bottom >= 0 && getComputedStyle(img).display !== 'none') {
+                img.src = img.dataset.src;
+                img.removeAttribute('data-src');
+                img.classList.remove('lazy');
+
+                lazyImages = lazyImages.filter(function(image) {
+                    return image !== img;
+                });
+
+                if (lazyImages.length === 0) {
+                    window.removeEventListener('scroll', lazyLoad);
+                    window.removeEventListener('resize', lazyLoad);
+                    window.removeEventListener('orientationchange', lazyLoad);
+                }
+            }
+        });
+    }
+
+    // Execute the lazy load function once to start loading images immediately after the initial page load
+    lazyLoad();
+
+    window.addEventListener('scroll', lazyLoad);
+    window.addEventListener('resize', lazyLoad);
+    window.addEventListener('orientationchange', lazyLoad);
+});
+
+window.addEventListener('load', function() {
+    var imageUrls = [
+        '{{ url_for("static", filename="asset/images/1.jpeg") }}'
+    ];
+
+    function preloadImages() {
+        imageUrls.forEach(function(url) {
+            var link = document.createElement('link');
+            link.rel = 'preload';
+            link.as = 'image';
+            link.href = url;
+            document.head.appendChild(link);
+        });
+    }
+
+    preloadImages();
+});
+
+{% for lesson in lessons %}
+document.getElementById("course-card-{{ loop.index }}").addEventListener("click", function() {
+    window.location.href = "{{ url_for('main.comment', lesson=lesson.id) }}";
+});
+{% endfor %}
+</script>
+{% endblock %}

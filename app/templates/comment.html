@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}选课互助{% endblock %}
+
+{% block page_content %}
+    <hr>
+    {% for comment in comments %}
+        <p>{{ comment.body }}</p>
+        <small>{{ comment.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+        <hr>
+    {% endfor %}
+    {{ wtf.quick_form(form) }}
+{% endblock %}

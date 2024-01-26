@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}选课互助{% endblock %}
+
+{% block page_content %}
+<div class="row">
+    {% if lessons %}
+    <h2>搜索结果：</h2>
+    {% for lesson in lessons %}
+    <div class="col-md-3">
+        <div class="card" id="course-card">
+            <img src="{{ url_for('static', filename='asset/images/1.jpeg') }}" alt="Card Image">
+            <div class="card-body">
+                <h2>{{ lesson.course }}</h2>
+                <p>{{ lesson.teacher }}</p>
+                <p>{{ lesson.credit }}学分</p>
+                {% if lesson.examination is none %}<p></p>{% else %}<p>{{ lesson.examination }}</p>{% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>没有找到符合搜索条件的课程。</p>
+    {% endif %}
+</div>
+<script>
+{% for lesson in lessons %}
+    document.querySelectorAll("#course-card").forEach(function(card) {
+        card.addEventListener("click", function() {
+            window.location.href = "{{ url_for('main.comment', lesson=lesson.id) }}";
+        });
+    });
+{% endfor %}
+</script>
+{% endblock %}

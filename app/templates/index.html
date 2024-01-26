@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}选课互助{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>Hello, {% if current_user.is_authenticated %}{{ current_user.username }}{% else %}Stranger{% endif %}!</h1>
+    {% if not known %}
+    <p>Pleased to meet you!</p>
+    {% else %}
+    <p>Happy to see you again!</p>
+    {% endif %}
+</div>
+
+<script>
+    // 弹出一个提示框
+    alert("欢迎访问矿大选课互助网页！\n本网页用于代替互助文档为矿大学生选课提供帮助\n互助文档信息有限，请您在查看想了解的课程之前先对您上过的课程进行评价\n为了方便大家使用，现在不登陆也能查看评价\n但请勿发布与课程无关信息");
+</script>
+
+{% endblock %}
